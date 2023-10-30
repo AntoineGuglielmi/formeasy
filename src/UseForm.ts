@@ -7,7 +7,7 @@ import {
   TErrorsCollection,
   TErrorMessage,
   getFormValues
-} from '../src'
+} from './index'
 
 interface IUseForm {
   getErrors: (field?: string) => TErrorMessagesCollection | TErrorsCollection
