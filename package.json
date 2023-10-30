@@ -1,5 +1,5 @@
 {
-  "name": "use-form",
+  "name": "formeasy",
   "version": "0.0.1",
   "description": "UseForm is a composable that allows validating forms and displaying error messages in an easy way",
   "main": "dist/index.js",
