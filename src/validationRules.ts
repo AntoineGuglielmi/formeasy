@@ -1,7 +1,7 @@
 import {
   getMessage,
   TValidationRuleWrapperParams,
-} from '../src';
+} from './index';
 
 /**
  * required

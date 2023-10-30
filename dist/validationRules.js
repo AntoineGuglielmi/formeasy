@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pattern = exports.matches = exports.minLength = exports.onlyLetters = exports.required = void 0;
-const src_1 = require("../src");
+const index_1 = require("./index");
 /**
  * required
  * @description Required validation rule
@@ -13,7 +13,7 @@ const required = (params = {}) => {
     const { special = null } = _params;
     return ({ value }) => {
         const isRequired = special !== null ? special : value;
-        return !!isRequired || (0, src_1.getMessage)(_params);
+        return !!isRequired || (0, index_1.getMessage)(_params);
     };
 };
 exports.required = required;
@@ -28,7 +28,7 @@ const onlyLetters = (params = {}) => {
     const { required } = _params;
     return ({ value }) => {
         const matches = required ? /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(value) : /^[A-Za-zÀ-ÖØ-öø-ÿ]*$/.test(value);
-        return matches || (0, src_1.getMessage)(_params);
+        return matches || (0, index_1.getMessage)(_params);
     };
 };
 exports.onlyLetters = onlyLetters;
@@ -42,7 +42,7 @@ const minLength = (params = {}) => {
     const _params = Object.assign({ message: 'This field must contain at least {min} characters', min: 3 }, params);
     const { min } = _params;
     return ({ value }) => {
-        return (value.length >= min) || (0, src_1.getMessage)(_params);
+        return (value.length >= min) || (0, index_1.getMessage)(_params);
     };
 };
 exports.minLength = minLength;
@@ -57,7 +57,7 @@ const matches = (params = {}) => {
     const { field } = _params;
     return ({ value, formValues }) => {
         const matches = value === formValues[field];
-        return matches || (0, src_1.getMessage)(_params);
+        return matches || (0, index_1.getMessage)(_params);
     };
 };
 exports.matches = matches;
@@ -66,7 +66,7 @@ const pattern = (params = {}) => {
     const { pattern } = _params;
     return ({ value }) => {
         const matches = pattern.test(value);
-        return matches || (0, src_1.getMessage)(_params);
+        return matches || (0, index_1.getMessage)(_params);
     };
 };
 exports.pattern = pattern;
