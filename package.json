@@ -1,0 +1,26 @@
+{
+  "name": "use-form",
+  "version": "0.0.1",
+  "description": "UseForm is a composable that allows validating forms and displaying error messages in an easy way",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node --files -r tsconfig-paths/register bin/index.ts",
+    "build": "npx tsc && tsc-alias && cpy './**/*.md' '!node_modules/**/*.md' './dist'"
+  },
+  "keywords": [
+    "form",
+    "validation",
+    "composable"
+  ],
+  "author": "Antoine Guglielmi",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.8",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "vue": "^3.2.36"
+  }
+}
