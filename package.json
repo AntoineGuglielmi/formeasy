@@ -1,7 +1,7 @@
 {
   "name": "formeasy",
-  "version": "0.0.4",
-  "description": "UseForm is a composable that allows validating forms and displaying error messages in an easy way",
+  "version": "0.1.0",
+  "description": "formeasy is a package that allows validating forms and displaying error messages in an easy way",
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node --files -r tsconfig-paths/register bin/index.ts",
