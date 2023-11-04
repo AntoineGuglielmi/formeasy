@@ -123,13 +123,16 @@ import {
   pattern
 } from 'formeasy'
 ```
-| Name          | Params                                    | Defaults | Description                                                                   |
-|---------------|-------------------------------------------|----------|-------------------------------------------------------------------------------|
-| `required`    | `({ message?: string })`                  |          | Returns an error message if the field is empty                                |
-| `onlyLetters` | `({ message?: string })`                  |          | Returns an error message if the field contains other characters than letters  |
-| `minLength`   | `({ min?: number, message?: string })`    | `min`: 3 | Returns an error message if the field length is less than `min`               |
-| `matches`     | `({ field: string, message?: string })`   |          | Returns an error message if the field value is different from `field`'s value |
-| `pattern`     | `({ pattern: RegExp, message?: string })` |          | Returns an error message if the field value doesn't match `pattern`           |
+| Name          | Params                                    | Defaults  | Description                                                                   |
+|---------------|-------------------------------------------|-----------|-------------------------------------------------------------------------------|
+| `required`    | `({ message?: string })`                  |           | Returns an error message if the field is empty                                |
+| `onlyLetters` | `({ message?: string })`                  |           | Returns an error message if the field contains other characters than letters  |
+| `onlyNumbers` | `({ message?: string })`                  |           | Returns an error message if the field contains other characters than numbers  |
+| `isEmail`     | `({ message?: string })`                  |           | Returns an error message if the field is not a valid email address            |
+| `minLength`   | `({ min?: number, message?: string })`    | `min`: 3  | Returns an error message if the field length is less than `min`               |
+| `maxLength`   | `({ max?: number, message?: string })`    | `max`: 10 | Returns an error message if the field length is more than `max`               |
+| `matches`     | `({ field: string, message?: string })`   |           | Returns an error message if the field value is different from `field`'s value |
+| `pattern`     | `({ pattern: RegExp, message?: string })` |           | Returns an error message if the field value doesn't match `pattern`           |
 
 You can specify a custom error message by passing the `message` parameter to the validation rule function.
 
