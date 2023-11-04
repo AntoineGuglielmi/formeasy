@@ -10,7 +10,8 @@ export type TValidationRulesCollection = Array<TValidationRule>
 export type TValidationRuleWrapper = (params?: Record<string, any>) => TValidationRule
 export type TValidationRuleWrapperParams = Record<string, any>
 
-export type TValidationRule = ({ value, formValues }: { value: any, formValues: any }) => boolean | string
+export type TValidationRule = ({ value, formValues, isRequired }: { value: any, formValues: any, isRequired: boolean }) => TValidationRuleResult
+export type TValidationRuleResult = boolean | string
 
 export type TErrorsCollection = Record<string, TErrorMessagesCollection>
 export type TErrorMessagesCollection = Array<TErrorMessage>
