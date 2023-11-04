@@ -6,7 +6,8 @@ import {
   TErrorMessagesCollection,
   TErrorsCollection,
   TErrorMessage,
-  getFormValues
+  getFormValues,
+  required
 } from './index'
 
 interface IUseForm {
@@ -40,8 +41,9 @@ export const UseForm = (): IUseForm => {
     errors.value = {}
     const formValues = getFormValues(form)
     Object.entries(form).map(([name, { value , validationRules = []}]) => {
+      const isRequired = validationRules.find((validationRule: TValidationRule) => validationRule.name === 'required') !== undefined
       const validationRulesResults = validationRules.reduce((acc: Array<TErrorMessage>, validationRule: TValidationRule) => {
-        const validationRuleResult = validationRule({ value, formValues })
+        const validationRuleResult = validationRule({ value, formValues, isRequired })
         acc.push(...(validationRuleResult !== true ? [String(validationRuleResult)] : []))
         return acc
       }, [])
