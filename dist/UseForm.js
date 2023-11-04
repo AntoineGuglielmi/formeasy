@@ -23,8 +23,9 @@ const UseForm = () => {
         errors.value = {};
         const formValues = (0, index_1.getFormValues)(form);
         Object.entries(form).map(([name, { value, validationRules = [] }]) => {
+            const isRequired = validationRules.find((validationRule) => validationRule.name === 'required') !== undefined;
             const validationRulesResults = validationRules.reduce((acc, validationRule) => {
-                const validationRuleResult = validationRule({ value, formValues });
+                const validationRuleResult = validationRule({ value, formValues, isRequired });
                 acc.push(...(validationRuleResult !== true ? [String(validationRuleResult)] : []));
                 return acc;
             }, []);

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pattern = exports.matches = exports.minLength = exports.onlyLetters = exports.required = void 0;
+exports.isEmail = exports.pattern = exports.matches = exports.maxLength = exports.minLength = exports.onlyNumbers = exports.onlyLetters = exports.required = void 0;
 const index_1 = require("./index");
 /**
  * required
@@ -11,10 +11,11 @@ const index_1 = require("./index");
 const required = (params = {}) => {
     const _params = Object.assign({ message: 'This field is required' }, params);
     const { special = null } = _params;
-    return ({ value }) => {
+    const required = ({ value }) => {
         const isRequired = special !== null ? special : value;
         return !!isRequired || (0, index_1.getMessage)(_params);
     };
+    return required;
 };
 exports.required = required;
 /**
@@ -33,6 +34,21 @@ const onlyLetters = (params = {}) => {
 };
 exports.onlyLetters = onlyLetters;
 /**
+ * onlyNumbers
+ * @description Only numbers validation rule
+ * @param {TValidationRuleWrapperParams} params
+ * @returns {({value}: {value: any}) => any}
+ */
+const onlyNumbers = (params = {}) => {
+    const _params = Object.assign({ message: 'This field must contain only numbers', required: true }, params);
+    const { required } = _params;
+    return ({ value }) => {
+        const matches = required ? /^[0-9]+$/.test(value) : /^[0-9]*$/.test(value);
+        return matches || (0, index_1.getMessage)(_params);
+    };
+};
+exports.onlyNumbers = onlyNumbers;
+/**
  * minLength
  * @description Min length validation rule
  * @param {TValidationRuleWrapperParams} params
@@ -50,6 +66,20 @@ exports.minLength = minLength;
  * maxLength
  * @description Max length validation rule
  * @param {TValidationRuleWrapperParams} params
+ * @returns {({value}: {value: any}) => boolean | string}
+ */
+const maxLength = (params = {}) => {
+    const _params = Object.assign({ message: 'This field must contain at most {max} characters', max: 10 }, params);
+    const { max } = _params;
+    return ({ value }) => {
+        return (value.length <= max) || (0, index_1.getMessage)(_params);
+    };
+};
+exports.maxLength = maxLength;
+/**
+ * maxLength
+ * @description Max length validation rule
+ * @param {TValidationRuleWrapperParams} params
  * @returns {({value, formValues}: {value: any, formValues?: any}) => boolean | string}
  */
 const matches = (params = {}) => {
@@ -61,6 +91,12 @@ const matches = (params = {}) => {
     };
 };
 exports.matches = matches;
+/**
+ * pattern
+ * @description Pattern validation rule
+ * @param {TValidationRuleWrapperParams} params
+ * @returns {({value}: {value: any}) => any}
+ */
 const pattern = (params = {}) => {
     const _params = Object.assign({ message: 'This field is not valid' }, params);
     const { pattern } = _params;
@@ -70,3 +106,14 @@ const pattern = (params = {}) => {
     };
 };
 exports.pattern = pattern;
+/**
+ * isEmail
+ * @description Email validation rule
+ * @param {TValidationRuleWrapperParams} params
+ * @returns {({value}: {value: any}) => any}
+ */
+const isEmail = (params = {}) => {
+    const _params = Object.assign({ message: 'This field must be a valid email' }, params);
+    return (0, exports.pattern)(Object.assign({ pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g }, _params));
+};
+exports.isEmail = isEmail;
