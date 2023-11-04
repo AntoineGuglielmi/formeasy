@@ -112,8 +112,8 @@ const {
 
 
 ### Validation rules
-Validation rules are functions that return `true` if the field is valid, otherwise an error message. To date, the following functions are 
-available:
+Validation rules are functions that return `true` if the field is valid, otherwise an error message. To date, the following validation 
+rules are available:
 ```typescript
 import {
   required,
