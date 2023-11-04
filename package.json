@@ -1,11 +1,11 @@
 {
   "name": "formeasy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "formeasy is a package that allows validating forms and displaying error messages in an easy way",
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node --files -r tsconfig-paths/register bin/index.ts",
-    "build": "npx tsc && tsc-alias && cpy './**/*.md' '!node_modules/**/*.md' './dist'"
+    "build": "npx tsc && tsc-alias"
   },
   "keywords": [
     "form",
