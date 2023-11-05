@@ -152,27 +152,40 @@ import {
 ```
 | Name            | Params                                   | Description                                                                                                                                                                                                                                         |
 |-----------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `getMessage`    | `(params: TValidationRuleWrapperParams)` | Returns the message with the placeholders replaced by the values of the `params` object. `params` must contain at least a `message` property.<br>Example: `getMessage({ message: 'One {two} three {four}, two: '2', four: '4' }) => 'One 2 three 4' |
+| `getMessage`    | `(params: TValidationRuleWrapperParams)` | Returns the message with the placeholders replaced by the values of the `params` object. `params` must contain at least a `message` property.<br>Example: `getMessage({ message: 'One {two} three {four}, two: '2', four: '4' }) => 'One 2 three 4'` |
 | `getFormValues` | `(form: TFormCollection)`                | Returns the values of the form as an object. The keys are the field names and the values are the field values.                                                                                                                                      |
 
 
 
 
 ### Types
-For information, here are the types used in this readme:
+For information, here are the types used in the package:
 ```typescript
-type TFormCollection = Record<string, IForm>
-
 interface IForm {
   value: string
   validationRules?: TValidationRulesCollection
 }
 
+type TFormValues = Record<string, any>
+
+type TFormCollection = Record<string, IForm>
+
 type TValidationRulesCollection = Array<TValidationRule>
 
-type TValidationRule = ({ value, formValues, required }: { value: any, formValues: any, required: boolean }) => boolean | string
-
+type TValidationRuleWrapper = (params?: TValidationRuleWrapperParams) => TValidationRule
 type TValidationRuleWrapperParams = Record<string, any>
+
+interface IValidationRuleParams {
+  value: any
+  formValues?: any
+  required?: boolean
+}
+type TValidationRule = ({ value, formValues, required }: IValidationRuleParams) => TValidationRuleResult
+type TValidationRuleResult = boolean | string
+
+type TErrorsCollection = Record<string, TErrorMessagesCollection>
+type TErrorMessagesCollection = Array<TErrorMessage>
+type TErrorMessage = string
 ```
 
 

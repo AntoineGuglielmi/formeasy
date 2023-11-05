@@ -1,6 +1,6 @@
 {
   "name": "formeasy",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "formeasy is a package that allows validating forms and displaying error messages in an easy way",
   "repository": {
     "type": "git",
