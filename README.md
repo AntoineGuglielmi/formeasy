@@ -150,10 +150,10 @@ import {
   getFormValues
 } from 'formeasy'
 ```
-| Name            | Params                          | Description                                                                                                                                                                                                                                         |
-|-----------------|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `getMessage`    | `(params: Record<string, any>)` | Returns the message with the placeholders replaced by the values of the `params` object. `params` must contain at least a `message` property.<br>Example: `getMessage({ message: 'One {two} three {four}, two: '2', four: '4' }) => 'One 2 three 4' |
-| `getFormValues` | `(form: TFormCollection)`       | Returns the values of the form as an object. The keys are the field names and the values are the field values.                                                                                                                                      |
+| Name            | Params                                   | Description                                                                                                                                                                                                                                         |
+|-----------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `getMessage`    | `(params: TValidationRuleWrapperParams)` | Returns the message with the placeholders replaced by the values of the `params` object. `params` must contain at least a `message` property.<br>Example: `getMessage({ message: 'One {two} three {four}, two: '2', four: '4' }) => 'One 2 three 4' |
+| `getFormValues` | `(form: TFormCollection)`                | Returns the values of the form as an object. The keys are the field names and the values are the field values.                                                                                                                                      |
 
 
 
@@ -170,7 +170,7 @@ interface IForm {
 
 type TValidationRulesCollection = Array<TValidationRule>
 
-type TValidationRule = ({ value, formValues }: { value: any, formValues: any }) => boolean | string
+type TValidationRule = ({ value, formValues, required }: { value: any, formValues: any, required: boolean }) => boolean | string
 
 type TValidationRuleWrapperParams = Record<string, any>
 ```
@@ -180,54 +180,75 @@ type TValidationRuleWrapperParams = Record<string, any>
 ## Create a validation rule
 You can create your own validation rules according to the following:
 ```typescript
-const maxLength = (params: TValidationRuleWrapperParams = {}) => {
+const myCustomRule: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
   // Merge defaults params with the params passed to the function
-  const _params: TValidationRuleWrapperParams = {
-    message: 'This field must contain at most {max} characters',
-    max: 8,
+  params = {
+    message: 'This is the default error message',
+    someDefaultParam: 'foo',
     ...params
   }
-  // Get the max value from the params
-  const {
-    max
-  } = _params
-  // Return the function that tests the value.
-  // The function takes as parameters the value of the field 
-  // and all the other values of the form
-  return ({ value }: { value: any }) => {
-    // Return true if the value length is less than or equal to max
-    // otherwise return the error message with the placeholders replaced by the values
-    return (value.length <= max) || getMessage(_params)
+  // Return the final function that tests the value.
+  // The function takes an object as a parameter. See below for more details.
+  return ({ value }: IValidationRuleParams): TValidationRuleResult => {
+    // The logic of the validation rule.
+    // Returns true if the field is valid, otherwise an error message.
+    // You can use the getMessage(param) helper to replace placeholders in the message
+    return /*value is valid ?*/ || getMessage(params)
   }
 }
 ```
 
-You can access the other values of the form in the validation rule function. For example:
+The final function accepts an object as a parameter. This object contains the value to be tested, the values of the other fields of the 
+form and a boolean indicating whether the field is required or not (`true` if the `required` validation rule is included in the 
+validationRules array, otherwise `false`). Example below:  
 ```typescript
-const maxLength = (params: TValidationRuleWrapperParams = {}) => {
-  // ...
+const isDoubleOf: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
+    message: 'This field must be the double of "{field}" field',
+    ...params
+  }
   const {
-    max,
-    otherField
-  } = _params
-  return ({ value, formValues }: { value: any, formValues: any }) => {
-    const otherFieldValue = formValues[otherField]
-    // Return logic according to the value of otherField
+    field
+  } = params
+  return ({ value, formValues, required }: IValidationRuleParams): TValidationRuleResult => {
+    // If the field is required, return the double verification, otherwise return true
+    return required ? (Number(value) === Number(formValues[field]) * 2 || getMessage(params)) : true
   }
 }
 ```
 
-And finally use it as follows:
+You can also use other validation rules in your custom validation rule:
+```typescript
+const mustBeSolidPassword: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
+    message: 'This field must be a solid password',
+    ...params
+  }
+  return ({ value }: IValidationRuleParams): TValidationRuleResult => {
+    // Use the pattern validation rule with a solid password regex.
+    // Note that the return is the call of the result of the pattern validation rule.
+    return pattern({
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+      ...params
+    })({ value })
+  }
+}
+```
+
+Finally, you can use your custom validation rules as seen previously:
 ```typescript
 const form = ref({
-  firstname: {
+  double: {
     value: '',
     validationRules: [
-      maxLength(),
-      // or with custom params
-      maxLength({ max: 10 }),
-      // or
-      maxLength({ max: 10, message: 'At most {max} characters!' }),
+      isDoubleOf({ field: 'single' }),
+    ]
+  },
+  password: {
+    value: '',
+    validationRules: [
+      // You still can provide a custom params (and message)
+      mustBeSolidPassword({ message: `The password you provided is not secure enough` })
     ]
   }
 })

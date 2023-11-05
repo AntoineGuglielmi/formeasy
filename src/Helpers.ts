@@ -1,6 +1,10 @@
-import { TFormCollection } from './types'
+import {
+  TFormCollection,
+  TFormValues,
+  TValidationRuleWrapperParams
+} from './types';
 
-export const getMessage = (params: Record<string, any>) => {
+export const getMessage = (params: TValidationRuleWrapperParams) => {
   const {
     message,
     ...rest
@@ -10,8 +14,8 @@ export const getMessage = (params: Record<string, any>) => {
   }, message)
 }
 
-export const getFormValues = (form: TFormCollection): Record<string, any> => {
-  return Object.entries(form).reduce((acc: Record<string, any>, [name, { value }]) => {
+export const getFormValues = (form: TFormCollection): TFormValues => {
+  return Object.entries(form).reduce((acc: TFormValues, [name, { value }]) => {
     acc[name] = value
     return acc
   }, {})

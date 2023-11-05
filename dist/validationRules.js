@@ -1,21 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isEmail = exports.pattern = exports.matches = exports.maxLength = exports.minLength = exports.onlyNumbers = exports.onlyLetters = exports.required = void 0;
+exports.isFalse = exports.isTrue = exports.isEmail = exports.pattern = exports.matches = exports.maxLength = exports.minLength = exports.onlyNumbers = exports.onlyLetters = exports.required = void 0;
 const index_1 = require("./index");
 /**
  * required
- * @description Required validation rule
+ * @description Required validation rule. If otherValue is passed, it will be used instead of value
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value}: {value: any}) => boolean | string}
  */
 const required = (params = {}) => {
-    const _params = Object.assign({ message: 'This field is required' }, params);
-    const { special = null } = _params;
-    const required = ({ value }) => {
-        const isRequired = special !== null ? special : value;
-        return !!isRequired || (0, index_1.getMessage)(_params);
+    params = Object.assign({ message: 'This field is required' }, params);
+    const { otherValue = null } = params;
+    return function required({ value }) {
+        const target = otherValue !== null ? otherValue : value;
+        return !!target || (0, index_1.getMessage)(params);
     };
-    return required;
 };
 exports.required = required;
 /**
@@ -25,11 +24,10 @@ exports.required = required;
  * @returns {({value}: {value: any}) => boolean | string}
  */
 const onlyLetters = (params = {}) => {
-    const _params = Object.assign({ message: 'This field must contain only letters', required: true }, params);
-    const { required } = _params;
-    return ({ value }) => {
+    params = Object.assign({ message: 'This field must contain only letters' }, params);
+    return ({ value, required }) => {
         const matches = required ? /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(value) : /^[A-Za-zÀ-ÖØ-öø-ÿ]*$/.test(value);
-        return matches || (0, index_1.getMessage)(_params);
+        return matches || (0, index_1.getMessage)(params);
     };
 };
 exports.onlyLetters = onlyLetters;
@@ -40,11 +38,10 @@ exports.onlyLetters = onlyLetters;
  * @returns {({value}: {value: any}) => any}
  */
 const onlyNumbers = (params = {}) => {
-    const _params = Object.assign({ message: 'This field must contain only numbers', required: true }, params);
-    const { required } = _params;
-    return ({ value }) => {
+    params = Object.assign({ message: 'This field must contain only numbers' }, params);
+    return ({ value, required }) => {
         const matches = required ? /^[0-9]+$/.test(value) : /^[0-9]*$/.test(value);
-        return matches || (0, index_1.getMessage)(_params);
+        return matches || (0, index_1.getMessage)(params);
     };
 };
 exports.onlyNumbers = onlyNumbers;
@@ -55,10 +52,10 @@ exports.onlyNumbers = onlyNumbers;
  * @returns {({value}: {value: any}) => boolean | string}
  */
 const minLength = (params = {}) => {
-    const _params = Object.assign({ message: 'This field must contain at least {min} characters', min: 3 }, params);
-    const { min } = _params;
+    params = Object.assign({ message: 'This field must contain at least {min} characters', min: 3 }, params);
+    const { min } = params;
     return ({ value }) => {
-        return (value.length >= min) || (0, index_1.getMessage)(_params);
+        return (value.length >= min) || (0, index_1.getMessage)(params);
     };
 };
 exports.minLength = minLength;
@@ -69,10 +66,10 @@ exports.minLength = minLength;
  * @returns {({value}: {value: any}) => boolean | string}
  */
 const maxLength = (params = {}) => {
-    const _params = Object.assign({ message: 'This field must contain at most {max} characters', max: 10 }, params);
-    const { max } = _params;
+    params = Object.assign({ message: 'This field must contain at most {max} characters', max: 10 }, params);
+    const { max } = params;
     return ({ value }) => {
-        return (value.length <= max) || (0, index_1.getMessage)(_params);
+        return (value.length <= max) || (0, index_1.getMessage)(params);
     };
 };
 exports.maxLength = maxLength;
@@ -83,11 +80,11 @@ exports.maxLength = maxLength;
  * @returns {({value, formValues}: {value: any, formValues?: any}) => boolean | string}
  */
 const matches = (params = {}) => {
-    const _params = Object.assign({ message: 'This field must match "{field}" field' }, params);
-    const { field } = _params;
+    params = Object.assign({ message: 'This field must match "{field}" field' }, params);
+    const { field } = params;
     return ({ value, formValues }) => {
         const matches = value === formValues[field];
-        return matches || (0, index_1.getMessage)(_params);
+        return matches || (0, index_1.getMessage)(params);
     };
 };
 exports.matches = matches;
@@ -98,11 +95,11 @@ exports.matches = matches;
  * @returns {({value}: {value: any}) => any}
  */
 const pattern = (params = {}) => {
-    const _params = Object.assign({ message: 'This field is not valid' }, params);
-    const { pattern } = _params;
+    params = Object.assign({ message: 'This field is not valid' }, params);
+    const { pattern } = params;
     return ({ value }) => {
         const matches = pattern.test(value);
-        return matches || (0, index_1.getMessage)(_params);
+        return matches || (0, index_1.getMessage)(params);
     };
 };
 exports.pattern = pattern;
@@ -113,9 +110,35 @@ exports.pattern = pattern;
  * @returns {({value}: {value: any}) => any}
  */
 const isEmail = (params = {}) => {
-    const _params = Object.assign({ message: 'This field must be a valid email' }, params);
+    params = Object.assign({ message: 'This field must be a valid email' }, params);
     return ({ value }) => {
-        return (0, exports.pattern)(Object.assign({ pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g }, _params))({ value });
+        return (0, exports.pattern)(Object.assign({ pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g }, params))({ value });
     };
 };
 exports.isEmail = isEmail;
+/**
+ * isTrue
+ * @description True validation rule
+ * @param {TValidationRuleWrapperParams} params
+ * @returns {({value}: {value: any}) => TValidationRuleResult}
+ */
+const isTrue = (params = {}) => {
+    params = Object.assign({ message: 'This field must be true' }, params);
+    return ({ value }) => {
+        return value === true || (0, index_1.getMessage)(params);
+    };
+};
+exports.isTrue = isTrue;
+/**
+ * isFalse
+ * @description False validation rule
+ * @param {TValidationRuleWrapperParams} params
+ * @returns {({value}: {value: any}) => TValidationRuleResult}
+ */
+const isFalse = (params = {}) => {
+    params = Object.assign({ message: 'This field must be false' }, params);
+    return ({ value }) => {
+        return value === false || (0, index_1.getMessage)(params);
+    };
+};
+exports.isFalse = isFalse;

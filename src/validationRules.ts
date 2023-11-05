@@ -1,29 +1,30 @@
 import {
   getMessage,
+  IValidationRuleParams,
   TValidationRule,
   TValidationRuleResult,
+  TValidationRuleWrapper,
   TValidationRuleWrapperParams,
 } from './index';
 
 /**
  * required
- * @description Required validation rule
+ * @description Required validation rule. If otherValue is passed, it will be used instead of value
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value}: {value: any}) => boolean | string}
  */
-export const required = (params: TValidationRuleWrapperParams = {}) => {
-  const _params: TValidationRuleWrapperParams = {
+export const required: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
     message: 'This field is required',
     ...params
   }
   const {
-    special = null
-  } = _params
-  const required = ({ value }: { value: any }): TValidationRuleResult => {
-    const isRequired = special !== null ? special : value
-    return !!isRequired || getMessage(_params)
+    otherValue = null
+  } = params
+  return function required({ value }: IValidationRuleParams): TValidationRuleResult {
+    const target = otherValue !== null ? otherValue : value
+    return !!target || getMessage(params)
   }
-  return required
 }
 
 /**
@@ -32,18 +33,14 @@ export const required = (params: TValidationRuleWrapperParams = {}) => {
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value}: {value: any}) => boolean | string}
  */
-export const onlyLetters = (params: TValidationRuleWrapperParams = {}) => {
-  const _params: TValidationRuleWrapperParams = {
+export const onlyLetters: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
     message: 'This field must contain only letters',
-    required: true,
     ...params
   }
-  const {
-    required
-  } = _params
-  return ({ value }: { value: any }): TValidationRuleResult => {
+  return ({ value, required }: IValidationRuleParams): TValidationRuleResult => {
     const matches = required ? /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(value) : /^[A-Za-zÀ-ÖØ-öø-ÿ]*$/.test(value)
-    return matches || getMessage(_params)
+    return matches || getMessage(params)
   }
 }
 
@@ -53,18 +50,14 @@ export const onlyLetters = (params: TValidationRuleWrapperParams = {}) => {
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value}: {value: any}) => any}
  */
-export const onlyNumbers = (params: TValidationRuleWrapperParams = {}) => {
-  const _params: TValidationRuleWrapperParams = {
+export const onlyNumbers: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
     message: 'This field must contain only numbers',
-    required: true,
     ...params
   }
-  const {
-    required
-  } = _params
-  return ({ value }: { value: any }): TValidationRuleResult => {
+  return ({ value, required }: IValidationRuleParams): TValidationRuleResult => {
     const matches = required ? /^[0-9]+$/.test(value) : /^[0-9]*$/.test(value)
-    return matches || getMessage(_params)
+    return matches || getMessage(params)
   }
 }
 
@@ -74,17 +67,17 @@ export const onlyNumbers = (params: TValidationRuleWrapperParams = {}) => {
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value}: {value: any}) => boolean | string}
  */
-export const minLength = (params: TValidationRuleWrapperParams = {}) => {
-  const _params: TValidationRuleWrapperParams = {
+export const minLength: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
     message: 'This field must contain at least {min} characters',
     min: 3,
     ...params
   }
   const {
     min
-  } = _params
-  return ({ value }: { value: any }): TValidationRuleResult => {
-    return (value.length >= min) || getMessage(_params)
+  } = params
+  return ({ value }: IValidationRuleParams): TValidationRuleResult => {
+    return (value.length >= min) || getMessage(params)
   }
 }
 
@@ -94,17 +87,17 @@ export const minLength = (params: TValidationRuleWrapperParams = {}) => {
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value}: {value: any}) => boolean | string}
  */
-export const maxLength = (params: TValidationRuleWrapperParams = {}) => {
-  const _params: TValidationRuleWrapperParams = {
+export const maxLength: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
     message: 'This field must contain at most {max} characters',
     max: 10,
     ...params
   }
   const {
     max
-  } = _params
-  return ({ value }: { value: any }): TValidationRuleResult => {
-    return (value.length <= max) || getMessage(_params)
+  } = params
+  return ({ value }: IValidationRuleParams): TValidationRuleResult => {
+    return (value.length <= max) || getMessage(params)
   }
 }
 
@@ -114,17 +107,17 @@ export const maxLength = (params: TValidationRuleWrapperParams = {}) => {
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value, formValues}: {value: any, formValues?: any}) => boolean | string}
  */
-export const matches = (params: TValidationRuleWrapperParams = {}) => {
-  const _params: TValidationRuleWrapperParams = {
+export const matches: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
     message: 'This field must match "{field}" field',
     ...params
   }
   const {
     field
-  } = _params
-  return ({value, formValues}: { value: any, formValues?: any }): TValidationRuleResult => {
+  } = params
+  return ({value, formValues}: IValidationRuleParams): TValidationRuleResult => {
     const matches = value === formValues[field]
-    return matches || getMessage(_params)
+    return matches || getMessage(params)
   }
 }
 
@@ -134,17 +127,17 @@ export const matches = (params: TValidationRuleWrapperParams = {}) => {
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value}: {value: any}) => any}
  */
-export const pattern = (params: TValidationRuleWrapperParams = {}) => {
-  const _params: TValidationRuleWrapperParams = {
+export const pattern: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
     message: 'This field is not valid',
     ...params
   }
   const {
     pattern
-  } = _params
-  return ({ value }: { value: any }): TValidationRuleResult => {
+  } = params
+  return ({ value }: IValidationRuleParams): TValidationRuleResult => {
     const matches = pattern.test(value)
-    return matches || getMessage(_params)
+    return matches || getMessage(params)
   }
 }
 
@@ -154,15 +147,47 @@ export const pattern = (params: TValidationRuleWrapperParams = {}) => {
  * @param {TValidationRuleWrapperParams} params
  * @returns {({value}: {value: any}) => any}
  */
-export const isEmail = (params: TValidationRuleWrapperParams = {}) => {
-  const _params: TValidationRuleWrapperParams = {
+export const isEmail: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
     message: 'This field must be a valid email',
     ...params
   }
-  return ({ value }: { value: any }): TValidationRuleResult => {
+  return ({ value }: IValidationRuleParams): TValidationRuleResult => {
     return pattern({
       pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-      ..._params
+      ...params
     })({ value })
+  }
+}
+
+/**
+ * isTrue
+ * @description True validation rule
+ * @param {TValidationRuleWrapperParams} params
+ * @returns {({value}: {value: any}) => TValidationRuleResult}
+ */
+export const isTrue: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
+    message: 'This field must be true',
+    ...params
+  }
+  return ({ value }: IValidationRuleParams): TValidationRuleResult => {
+    return value === true || getMessage(params)
+  }
+}
+
+/**
+ * isFalse
+ * @description False validation rule
+ * @param {TValidationRuleWrapperParams} params
+ * @returns {({value}: {value: any}) => TValidationRuleResult}
+ */
+export const isFalse: TValidationRuleWrapper = (params: TValidationRuleWrapperParams = {}): TValidationRule => {
+  params = {
+    message: 'This field must be false',
+    ...params
+  }
+  return ({ value }: IValidationRuleParams): TValidationRuleResult => {
+    return value === false || getMessage(params)
   }
 }
