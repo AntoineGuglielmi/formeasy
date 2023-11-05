@@ -1,7 +1,11 @@
 {
   "name": "formeasy",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "formeasy is a package that allows validating forms and displaying error messages in an easy way",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AntoineGuglielmi/formeasy.git"
+  },
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node --files -r tsconfig-paths/register bin/index.ts",

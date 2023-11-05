@@ -212,7 +212,14 @@ const isDoubleOf: TValidationRuleWrapper = (params: TValidationRuleWrapperParams
   } = params
   return ({ value, formValues, required }: IValidationRuleParams): TValidationRuleResult => {
     // If the field is required, return the double verification, otherwise return true
-    return required ? (Number(value) === Number(formValues[field]) * 2 || getMessage(params)) : true
+    const isEqualToDouble = Number(value) === Number(formValues[field]) * 2
+    const shouldDisplayMessage = getMessage(params)
+
+    return required
+      ? (isEqualToDouble || shouldDisplayMessage)
+      : (Number(value)
+        ? (isEqualToDouble || shouldDisplayMessage)
+        : true)
   }
 }
 ```
