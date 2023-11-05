@@ -114,6 +114,8 @@ exports.pattern = pattern;
  */
 const isEmail = (params = {}) => {
     const _params = Object.assign({ message: 'This field must be a valid email' }, params);
-    return (0, exports.pattern)(Object.assign({ pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g }, _params));
+    return ({ value }) => {
+        return (0, exports.pattern)(Object.assign({ pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g }, _params))({ value });
+    };
 };
 exports.isEmail = isEmail;
