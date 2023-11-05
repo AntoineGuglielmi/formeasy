@@ -159,8 +159,10 @@ export const isEmail = (params: TValidationRuleWrapperParams = {}) => {
     message: 'This field must be a valid email',
     ...params
   }
-  return pattern({
-    pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-    ..._params
-  })
+  return ({ value }: { value: any }): TValidationRuleResult => {
+    return pattern({
+      pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+      ..._params
+    })({ value })
+  }
 }
