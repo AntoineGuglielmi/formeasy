@@ -1,9 +1,13 @@
+export type TValue = any
+
 export interface IForm {
-  value: string
+  value: TValue
   validationRules?: TValidationRulesCollection
+  reset?: TValue
 }
 
-export type TFormValues = Record<string, any>
+export type TFormValues = Record<string, TValue>
+export type TResetValues = Record<string, TValue>
 
 export type TFormCollection = Record<string, IForm>
 
@@ -13,8 +17,8 @@ export type TValidationRuleWrapper = (params?: TValidationRuleWrapperParams) => 
 export type TValidationRuleWrapperParams = Record<string, any>
 
 export interface IValidationRuleParams {
-  value: any
-  formValues?: any
+  value: TValue
+  formValues?: TFormValues
   required?: boolean
 }
 export type TValidationRule = ({ value, formValues, required }: IValidationRuleParams) => TValidationRuleResult

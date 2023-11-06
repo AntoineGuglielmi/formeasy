@@ -83,7 +83,7 @@ const matches = (params = {}) => {
     params = Object.assign({ message: 'This field must match "{field}" field' }, params);
     const { field } = params;
     return ({ value, formValues }) => {
-        const matches = value === formValues[field];
+        const matches = value === (formValues && formValues[field]);
         return matches || (0, index_1.getMessage)(params);
     };
 };

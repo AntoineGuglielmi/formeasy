@@ -2,9 +2,9 @@ import {
   TFormCollection,
   TFormValues,
   TValidationRuleWrapperParams
-} from './types';
+} from './types'
 
-export const getMessage = (params: TValidationRuleWrapperParams) => {
+export const getMessage = (params: TValidationRuleWrapperParams): string => {
   const {
     message,
     ...rest

@@ -5,7 +5,7 @@ import {
   TValidationRuleResult,
   TValidationRuleWrapper,
   TValidationRuleWrapperParams,
-} from './index';
+} from './index'
 
 /**
  * required
@@ -116,7 +116,7 @@ export const matches: TValidationRuleWrapper = (params: TValidationRuleWrapperPa
     field
   } = params
   return ({value, formValues}: IValidationRuleParams): TValidationRuleResult => {
-    const matches = value === formValues[field]
+    const matches = value === (formValues && formValues[field])
     return matches || getMessage(params)
   }
 }
