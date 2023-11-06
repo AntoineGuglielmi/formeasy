@@ -30,11 +30,6 @@ npm install formeasy
 
 import { UseForm, required } from 'formeasy'
 
-const {
-  formIsValid,
-  getError,
-} = UseForm()
-
 const form = ref({
   firstname: {
     value: '',
@@ -50,10 +45,17 @@ const form = ref({
   }
 })
 
+const {
+  formIsValid,
+  getError,
+  reset
+} = UseForm(form.value)
+
 const submitForm = () => {
 
-  if (formIsValid(form.value)) {
+  if (formIsValid()) {
     // do something
+    reset()
   }
 
 }
@@ -100,14 +102,16 @@ import { UseForm } from 'formeasy'
 const {
   formIsValid,
   getError,
-  getErrors
+  getErrors,
+  reset
 } = UseForm()
 ```
-| Name          | Params                    | Description                                                                                                            |
-|---------------|---------------------------|------------------------------------------------------------------------------------------------------------------------|
-| `formIsValid` | `(form: TFormCollection)` | Validate a form and returns `true` or `false` whether the form is valid or not                                         |                                                                                    |                                    |
-| `getError`    | `(fieldName: string)`     | Returns the first error message for the field `fieldName` if it exists                                                 |
-| `getErrors`   | `(fieldName?: string)`    | If `fieldName` is provided, returns all error messages fo the field `fieldName`, otherwise all messages for all fields |
+| Name          | Params                 | Description                                                                                                            |
+|---------------|------------------------|------------------------------------------------------------------------------------------------------------------------|
+| `formIsValid` | `()`                   | Validate a form and returns `true` or `false` whether the form is valid or not                                         |                                                                                    |                                    |
+| `getError`    | `(fieldName: string)`  | Returns the first error message for the field `fieldName` if it exists                                                 |
+| `getErrors`   | `(fieldName?: string)` | If `fieldName` is provided, returns all error messages fo the field `fieldName`, otherwise all messages for all fields |
+| `reset`       | `()`                   | Reset the form to its initial state                                                                                    |
 
 
 
